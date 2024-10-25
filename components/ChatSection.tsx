@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from 'next/image';
 import botImage from '@/public/ETERNA.svg';
+import { useUser } from '@clerk/nextjs';
+import { usePathname, useRouter } from 'next/navigation';
+import { verifyFID } from '@/actions/server';
 
 interface Message {
   sender: 'user' | 'agent';
@@ -11,6 +14,30 @@ interface Message {
 }
 
 function ChatSection() {
+  const router = useRouter();
+  const pathname = usePathname()
+  const { user } = useUser();
+  const fid = pathname.split('/chat/')[1]
+
+
+  useEffect(()=>{
+    async function verifyChat(){
+      if(!user){
+        router.replace('/');
+        return;
+      }
+      if(!user.username) return;
+      const res = await verifyFID(user.username, fid);
+      if(!res){
+        router.replace('/');
+        return;
+      }else{
+        console.log("Successfully Connected!!")
+      }
+    }
+    verifyChat()
+  }, [user])
+
   const [messages, setMessages] = useState<Message[]>([
     { sender: 'agent', message: 'Hello! How can I assist you today?' }
   ]);

@@ -10,7 +10,7 @@ function Navbar() {
       <div className='flex justify-between items-center py-2 px-6 border-b '>
         <div className="flex items-center space-x-2">
           <Image className='size-12 rounded-full bg-gray-600' alt='yo' src={logo}/>
-          <p className='font-bold text-3xl px-3'>ETERNA</p>
+          <p className='font-bold text-3xl px-3 text-purple-950'>ETERNA</p>
         </div>
         <div className='flex'>
         <SignedOut>
