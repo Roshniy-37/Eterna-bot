@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, } from 'react'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Image from 'next/image'
@@ -13,6 +15,8 @@ function ChatSection() {
   const [messages, setMessages] = useState<Message[]>([
     { sender: 'agent', message: 'Hello! How can I assist you today?' },
     { sender: 'user', message: 'I`d like to know more about career opportunities in tech.' },
+    { sender: 'agent', message: 'Hello! How can I assist you today?' },
+    { sender: 'user', message: 'I`d like to know more about career opportunities in tech.' },
     { sender: 'agent', message: 'Sure, I can provide you with some insights on that.' },
     { sender: 'user', message: 'What is the most in-demand skill in tech right now?' },
     { sender: 'agent', message: 'Artificial Intelligence and Cloud Computing are currently very hot.' },
@@ -21,7 +25,7 @@ function ChatSection() {
   ]);
 
   return (
-    <div className="mt-4 flex flex-col mx-auto w-5/6 h-3/4 min-h-[75vh] border border-gray-300 rounded-lg shadow-md overflow-hidden">
+    <div className="mt-4 flex flex-col mx-auto w-5/6 min-h-[75vh] h-[75vh] border border-gray-300 rounded-lg shadow-md overflow-hidden">
       
       {/* Scrollable Chat Area */}
       <ScrollArea className="w-full h-full flex-1 p-4 space-y-3 overflow-y-auto bg-gray-50">
@@ -30,7 +34,7 @@ function ChatSection() {
           msg.message && ( // Only render non-null messages
             <div
               key={index}
-              className={`flex items-start space-x-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex items-start my-1 space-x-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.sender === 'agent' && (
                 <Image
