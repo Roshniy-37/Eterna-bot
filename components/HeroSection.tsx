@@ -5,13 +5,14 @@ import Link from 'next/link';
 import { chats } from '@prisma/client';
 import { addFriend, getFriends } from '@/actions/server';
 import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 export default function HeroSection() {
   const { user } = useUser()
   const [file, setFile] = useState<File | null>(null);
   const [username, setUsername] = useState<string>('');
   const [Friends, setFriends] = useState<chats[] | null>()
-//   const router = useRouter();
+  const router = useRouter();
 
 
   async function getData(){
@@ -50,7 +51,8 @@ export default function HeroSection() {
     if (file && username) {
         const friend = await createNewFriend();
         console.log(friend)
-    //   router.push('/chat');
+        await new Promise(r => setTimeout(r, 700));
+        router.push('/chat/${friend.chatId}');
     } else {
       alert("Please enter a username and select a file before submitting.");
     }

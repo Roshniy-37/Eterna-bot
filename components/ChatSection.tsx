@@ -5,38 +5,27 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from 'next/image';
 import botImage from '@/public/ETERNA.svg';
 import { useUser } from '@clerk/nextjs';
-import { usePathname, useRouter } from 'next/navigation';
-import { verifyFID } from '@/actions/server';
-
 interface Message {
   sender: 'user' | 'agent';
   message: string | null;
 }
 
 function ChatSection() {
-  const router = useRouter();
-  const pathname = usePathname()
   const { user } = useUser();
-  const fid = pathname.split('/chat/')[1]
 
+  const [checking, setChecking] = useState(true);
 
-  useEffect(()=>{
-    async function verifyChat(){
-      if(!user){
-        router.replace('/');
-        return;
-      }
-      if(!user.username) return;
-      const res = await verifyFID(user.username, fid);
-      if(!res){
-        router.replace('/');
-        return;
-      }else{
-        console.log("Successfully Connected!!")
-      }
+  useEffect(() => {
+    async function verifyChat() {
+      if (!user || !user.username) return;
+
+      await new Promise(r => setTimeout(r, 500));
+      setChecking(false);
     }
-    verifyChat()
-  }, [user])
+
+    verifyChat();
+  }, [user]);
+
 
   const [messages, setMessages] = useState<Message[]>([
     { sender: 'agent', message: 'Hello! How can I assist you today?' }
@@ -46,11 +35,9 @@ function ChatSection() {
   const handleSend = async () => {
     if (input.trim() === "") return;
 
-    // Append user message to chat
     const newMessages: Message[] = [...messages, { sender: 'user', message: input } as Message];
     setMessages(newMessages);
 
-    // Call API for bot response
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -75,15 +62,12 @@ function ChatSection() {
         { sender: 'agent', message: "Sorry, I'm having trouble responding right now." } as Message,
       ]);
     }
-
-    // Clear input
     setInput("");
   };
-
+if (checking) {
   return (
     <div className="mt-4 flex flex-col mx-auto w-5/6 min-h-[75vh] h-[75vh] border border-gray-300 rounded-lg shadow-md overflow-hidden">
       
-      {/* Scrollable Chat Area */}
       <ScrollArea className="w-full h-full flex-1 p-4 space-y-3 overflow-y-auto bg-gray-50">
         {messages.map((msg, index) => (
           msg.message && (
@@ -117,7 +101,6 @@ function ChatSection() {
         ))}
       </ScrollArea>
 
-      {/* Chat Input */}
       <div className="border-t p-2 bg-white flex items-center space-x-2 bottom-0">
         <input
           type="text"
@@ -136,6 +119,7 @@ function ChatSection() {
       </div>
     </div>
   );
+}
 }
 
 export default ChatSection;

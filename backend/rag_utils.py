@@ -14,9 +14,6 @@ DATA_PATH = "data"
 CHROMA_PATH = "ChromaDatabases"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
-# ============================
-#  EMBEDDING CLASS (FIXED)
-# ============================
 
 class LocalEmbedding:
     def __init__(self):
@@ -31,9 +28,6 @@ class LocalEmbedding:
 embedding_fn = LocalEmbedding()
 
 
-# ============================
-# CHAT MODEL (OpenRouter)
-# ============================
 
 CHAT_MODEL = "mistralai/mistral-7b-instruct"
 
@@ -55,9 +49,6 @@ def openrouter_chat(prompt):
     return res.json()["choices"][0]["message"]["content"]
 
 
-# ============================
-# LOAD + SPLIT DOCUMENTS
-# ============================
 
 def load_docs():
     loader = DirectoryLoader(DATA_PATH, glob="*.txt")
@@ -73,10 +64,6 @@ def split_docs(documents):
     )
     return splitter.split_documents(documents)
 
-
-# ============================
-# SAVE TO CHROMA
-# ============================
 
 def save_to_chroma(chunks, user_id):
 
@@ -97,9 +84,6 @@ def generate_data_store(user_id):
     return save_to_chroma(chunks, user_id)
 
 
-# ============================
-# QUERY RAG
-# ============================
 
 PROMPT_TEMPLATE = """
 Use ONLY this context:

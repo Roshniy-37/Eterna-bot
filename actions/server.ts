@@ -29,11 +29,16 @@ export async function addFriend(fname: string, userId: string){
     return null
 }
 
-export async function verifyFID(userId: string, fid: string){
-    return await prisma.chats.findFirst({
-        where: {
-            chatId: fid,
-            userId
-        }
-    })
+export async function verifyFID(userId: string, fid: string) {
+  for (let i = 0; i < 5; i++) {
+    const chat = await prisma.chats.findFirst({
+      where: { chatId: fid, userId }
+    });
+
+    if (chat) return chat;
+
+    await new Promise(r => setTimeout(r, 300));
+  }
+
+  return null;
 }
